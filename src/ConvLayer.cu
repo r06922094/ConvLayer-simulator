@@ -71,4 +71,5 @@ void ConvLayer_weight_init(ConvLayer *thiz)
 void ConvLayer_bias_init(ConvLayer *thiz)
 {
     tensor_create(&thiz->bias, thiz->kernelAmount, 1, 1, 1);
+    thiz->bias->toGpu(thiz->bias);
 }
