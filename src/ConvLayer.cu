@@ -1,4 +1,5 @@
 #include "ConvLayer.h"
+#include "tensor.h"
 
 static void feedforward(LayerBase *thiz)
 {
@@ -43,6 +44,20 @@ void ConvLayer_init(ConvLayer **thiz, int batchSize, \
     (*thiz)->kernelDim = kernelDim;
     (*thiz)->kernelAmount = kernelAmount;
     /* TODO: Initialize Weights and bias */
+    ConvLayer_weight_init(*thiz);
+    ConvLayer_bias_init(*thiz);
+    /*
     (*thiz)->weight = NULL;
     (*thiz)->bias = NULL;
+    */
+}
+
+void ConvLayer_weight_init(ConvLayer *thiz)
+{
+    tensor_create(&thiz->weight, thiz->kernelAmount, thiz->kernelDim, thiz->kernelDim, thiz->lb->inputChannel);
+}
+
+void ConvLayer_bias_init(ConvLayer *thiz)
+{
+    tensor_create(&thiz->bias, thiz->kernelAmount, 1, 1, 1);
 }
