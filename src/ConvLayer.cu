@@ -34,7 +34,6 @@ void ConvLayer_init(ConvLayer **thiz, int batchSize, \
     base->outputChannel = kernelAmount;
     base->input = preLayer->output;
     /* Allocate memory for output */
-    //tensor *output = base->output;
     tensor_create(&base->output, base->batchSize, base->outputDim, base->outputDim, base->outputChannel);
     /******************************/
     base->preLayer = preLayer;

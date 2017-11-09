@@ -36,7 +36,6 @@ void DataLayer_init(DataLayer **thiz, int batchSize, \
     base->outputChannel = inputChannel;
     base->input = NULL;
     /* Allocate memory for output */
-    //tensor *output = base->output;
     tensor_create(&base->output, base->batchSize, base->outputDim, base->outputDim, base->outputChannel);
     /******************************/
     base->preLayer = NULL;

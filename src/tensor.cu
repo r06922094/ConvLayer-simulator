@@ -7,10 +7,10 @@ static void toGpu(tensor *thiz)
     int size = sizeoftensor(thiz);
 
     if (thiz->devData) {
-        error = cudaMemcpy(thiz->devData, thiz->hostData, sizeof(int) * size, cudaMemcpyHostToDevice);
+        error = cudaMemcpy(thiz->devData, thiz->hostData, sizeof(conv_unit_t) * size, cudaMemcpyHostToDevice);
     } else {
         thiz->mallocDev(thiz);
-        error = cudaMemcpy(thiz->devData, thiz->hostData, sizeof(int) * size, cudaMemcpyHostToDevice);
+        error = cudaMemcpy(thiz->devData, thiz->hostData, sizeof(conv_unit_t) * size, cudaMemcpyHostToDevice);
     }
 
     if (error != cudaSuccess) {
@@ -25,7 +25,7 @@ static void toCpu(tensor *thiz)
     cudaError_t error;
     int size = sizeoftensor(thiz);
     if (thiz->devData) {
-        error = cudaMemcpy(thiz->hostData, thiz->devData, sizeof(int) * size, cudaMemcpyDeviceToHost);
+        error = cudaMemcpy(thiz->hostData, thiz->devData, sizeof(conv_unit_t) * size, cudaMemcpyDeviceToHost);
     } else {
         printf("tensor.c: toCpu failed\n");
         exit(0);
@@ -37,7 +37,7 @@ static void toCpu(tensor *thiz)
     }
 }
 
-static void set(tensor *thiz, int d0, int d1, int d2, int d3, int value)
+static void set(tensor *thiz, int d0, int d1, int d2, int d3, conv_unit_t value)
 {
     int index = tindex(thiz, d0, d1, d2, d3);
     
@@ -51,7 +51,7 @@ static void set(tensor *thiz, int d0, int d1, int d2, int d3, int value)
 }
 
 /* return the value by given position */
-static int get(tensor *thiz, int d0, int d1, int d2, int d3)
+static conv_unit_t get(tensor *thiz, int d0, int d1, int d2, int d3)
 {
     int index = tindex(thiz, d0, d1, d2, d3);
     return thiz->hostData[index];
@@ -66,8 +66,8 @@ static void mallocHost(tensor *thiz)
         exit(0);
     }
 
-    thiz->hostData = (int *) ma->HostMalloc(ma, sizeof(int) * size);
-    memset(thiz->hostData, 0, thiz->D0 * thiz->D1 * thiz->D2 * thiz->D3 * sizeof(int));
+    thiz->hostData = (conv_unit_t *) ma->HostMalloc(ma, sizeof(conv_unit_t) * size);
+    memset(thiz->hostData, 0, thiz->D0 * thiz->D1 * thiz->D2 * thiz->D3 * sizeof(conv_unit_t));
 }
 
 static void mallocDev(tensor *thiz)
@@ -78,8 +78,8 @@ static void mallocDev(tensor *thiz)
         exit(0);
     }
 
-    thiz->devData = (int *) ma->DevMalloc(ma, sizeof(int) * size);
-    cudaError_t error = cudaMemset(thiz->devData, 0, sizeof(int) * size);
+    thiz->devData = (conv_unit_t *) ma->DevMalloc(ma, sizeof(conv_unit_t) * size);
+    cudaError_t error = cudaMemset(thiz->devData, 0, sizeof(conv_unit_t) * size);
     if (error != cudaSuccess) {
         printf("tensor.c: cudamemset failed\n");
         exit(0);

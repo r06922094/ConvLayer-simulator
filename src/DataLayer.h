@@ -12,7 +12,6 @@ struct __DataLayer {
 };
 
 /* TODO: feedforward implementation */
-/* TODO: Set input */
 void DataLayer_init(DataLayer **thiz, int batchSize, \
                     int inputDim, \
                     int inputChannel, \
