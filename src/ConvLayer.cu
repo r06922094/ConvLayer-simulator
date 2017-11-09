@@ -55,6 +55,17 @@ void ConvLayer_init(ConvLayer **thiz, int batchSize, \
 void ConvLayer_weight_init(ConvLayer *thiz)
 {
     tensor_create(&thiz->weight, thiz->kernelAmount, thiz->kernelDim, thiz->kernelDim, thiz->lb->inputChannel);
+    tensor *tzr = thiz->weight;
+    for (int i = 0; i < tzr->D0; i++) {
+        for (int j = 0; j < tzr->D1; j++) {
+            for (int k = 0; k < tzr->D2; k++) {
+                for (int w = 0; w < tzr->D3; w++) {
+                    tzr->set(tzr, i, j, k, w, 0.5);
+                }
+            }
+        }
+    }
+    tzr->toGpu(tzr);
 }
 
 void ConvLayer_bias_init(ConvLayer *thiz)
