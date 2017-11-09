@@ -19,7 +19,7 @@
 typedef struct __tensor tensor;
 
 /* Unit for Neural Network to operate */
-typedef char conv_unit_t;
+typedef float conv_unit_t;
 
 struct __tensor {
     /* tensor[d0, d1, d2, d4] = value */
