@@ -3,9 +3,14 @@
 static void *HostMalloc(MemoryAllocator *thiz, int size)
 {
     void *mem = NULL;
-    cudaError_t error = cudaHostAlloc(&mem, size, cudaHostAllocDefault);
-    if (error != cudaSuccess) {
-        printf("MemoryAllocator.c: No available memory for Host\n");
+    //cudaError_t error = cudaHostAlloc(&mem, size, cudaHostAllocDefault);
+    //if (error != cudaSuccess) {
+    //    printf("MemoryAllocator.c: No available memory for Host: %d\n", size);
+    //    exit(0);
+    //}
+    mem = malloc(size);
+    if (!mem) {
+        printf("MemoryAllocator.c: No available memory for Host: %d\n", size);
         exit(0);
     }
     /* Record memory usage of Host */
@@ -19,7 +24,7 @@ static void *DevMalloc(MemoryAllocator *thiz, int size)
     void *mem = NULL;
     cudaError_t error = cudaMalloc(&mem, size);
     if (error != cudaSuccess) {
-        printf("MemoryAllocator.c: No available memory for Device\n");
+        printf("MemoryAllocator.c: No available memory for Device: %d\n", error);
         exit(0);
     }
     /* Record memory usage of Device */

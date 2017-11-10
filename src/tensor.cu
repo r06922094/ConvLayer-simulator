@@ -13,8 +13,10 @@ static void toGpu(tensor *thiz)
         error = cudaMemcpy(thiz->devData, thiz->hostData, sizeof(conv_unit_t) * size, cudaMemcpyHostToDevice);
     }
 
+    //printf("%x - %x %d\n", thiz->hostData, thiz->devData, sizeof(conv_unit_t) * size);
+
     if (error != cudaSuccess) {
-        printf("tensor.c: toGpu failed\n");
+        printf("tensor.c: toGpu failed: %d\n",error);
         exit(0);
     }
 }

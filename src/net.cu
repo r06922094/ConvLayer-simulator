@@ -28,13 +28,12 @@ tensor *next_batch(tensor *x, int N)
    int area = x->D1 * x->D2 * x->D3;
    tensor *ret = NULL;
    tensor_create(&ret, _BATCH_SIZE, x->D1, x->D2, x->D3);
-
-   memcpy(ret->hostData, x->hostData + N * area * _BATCH_SIZE, area * _BATCH_SIZE);
+   memcpy(ret->hostData, x->hostData + N * area * _BATCH_SIZE * sizeof(conv_unit_t), area * _BATCH_SIZE * sizeof(conv_unit_t));
 
    return ret;
 }
 
-void trainNetwork(LayerBase *head, tensor *x)
+tensor *trainNetwork(LayerBase *head, tensor *x)
 {
     /* TODO: Batch Function */
     DataLayer *dat = (DataLayer *) head;
@@ -48,5 +47,9 @@ void trainNetwork(LayerBase *head, tensor *x)
         /* Start feedforward */
         dat->lb->feedforward((LayerBase *) dat);
         conv->lb->feedforward((LayerBase *) conv);
+        cudaDeviceSynchronize();
+        //printf("host continu~\n");
     }
+    conv->lb->output->toCpu(conv->lb->output);
+    return conv->lb->output;
 }

@@ -12,6 +12,6 @@
 
 LayerBase *buildNetwork();
 
-void trainNetwork(LayerBase *head, tensor *x);
+tensor *trainNetwork(LayerBase *head, tensor *x);
 
 #endif

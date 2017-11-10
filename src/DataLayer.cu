@@ -1,13 +1,18 @@
 #include "tensor.h"
 #include "DataLayer.h"
+#include <string.h>
 
 static void feedforward(LayerBase *thiz)
 {
     DataLayer *data = (DataLayer *) thiz;
+
+    memcpy(data->lb->output->hostData, data->lb->input->hostData, sizeof(conv_unit_t) * sizeoftensor(data->lb->input));
     tensor *output = data->lb->output;
     /* Prepare a new copy for flowing data */
     //tensor_create(&output, base->batchSize, base->inputDim, base->inputDim, base->inputChannel);
     /* TODO: Copy data from input to output */
+    //cudaFree(output->devData);
+    //output->devData = NULL;
     output->toGpu(output);
 }
 
