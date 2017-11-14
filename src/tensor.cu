@@ -2,15 +2,15 @@
 
 static void toGpu(tensor *thiz)
 {
-    /* Allocate Memory for Gpu */
+    /* Copy Data from Host to Gpu */
     cudaError_t error;
     int size = sizeoftensor(thiz);
 
-    if (thiz->devData) {
+    if (thiz->devData && thiz->hostData) {
         error = cudaMemcpy(thiz->devData, thiz->hostData, sizeof(conv_unit_t) * size, cudaMemcpyHostToDevice);
     } else {
-        thiz->mallocDev(thiz);
-        error = cudaMemcpy(thiz->devData, thiz->hostData, sizeof(conv_unit_t) * size, cudaMemcpyHostToDevice);
+        printf("tensor.cu: toGpu failed, either devData or hostData not yet allocated\n");
+        exit(0);
     }
 
     if (error != cudaSuccess) {
@@ -21,13 +21,13 @@ static void toGpu(tensor *thiz)
 
 static void toCpu(tensor *thiz)
 {
-    /* Check whether Gpu is available to copy */
+    /* Copy Data from Gpu to Host */
     cudaError_t error;
     int size = sizeoftensor(thiz);
-    if (thiz->devData) {
+    if (thiz->devData && thiz->hostData) {
         error = cudaMemcpy(thiz->hostData, thiz->devData, sizeof(conv_unit_t) * size, cudaMemcpyDeviceToHost);
     } else {
-        printf("tensor.c: toCpu failed\n");
+        printf("tensor.c: toCpu failed, either devData or hostData not yet allocated\n");
         exit(0);
     }
 
@@ -86,6 +86,20 @@ static void mallocDev(tensor *thiz)
     }
 }
 
+static conv_unit_t *getHost(tensor *thiz)
+{
+    if (!thiz->hostData) 
+        mallocHost(thiz);
+    return thiz->hostData;
+}
+
+static conv_unit_t *getDev(tensor *thiz)
+{
+    if (!thiz->devData)
+        mallocDev(thiz);
+    return thiz->devData;
+}
+
 void tensor_create(tensor **thiz, int d0, int d1, int d2, int d3)
 {
     (*thiz) = (tensor *) malloc(sizeof(tensor));
@@ -95,12 +109,15 @@ void tensor_create(tensor **thiz, int d0, int d1, int d2, int d3)
     (*thiz)->toCpu = toCpu;
     (*thiz)->mallocHost = mallocHost;
     (*thiz)->mallocDev = mallocDev;
+    (*thiz)->getHost = getHost;
+    (*thiz)->getDev = getDev;
     (*thiz)->D0 = d0;
     (*thiz)->D1 = d1;
     (*thiz)->D2 = d2;
     (*thiz)->D3 = d3;
     (*thiz)->hostData = NULL;
     (*thiz)->devData = NULL;
+    
     /* Allocate Host memory when initialization */
     mallocHost(*thiz);
 }

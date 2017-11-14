@@ -34,6 +34,10 @@ struct __tensor {
     void (*mallocHost)(tensor *thiz);
     /* Allocate memory on Device */
     void (*mallocDev)(tensor *thiz);
+    /* Return Host address */
+    conv_unit_t *(*getHost)(tensor *thiz);
+    /* Return Device address */
+    conv_unit_t *(*getDev)(tensor *thiz);
 
     /* info of this tensor */
     int D0, D1, D2, D3;

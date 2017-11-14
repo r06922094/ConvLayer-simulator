@@ -4,11 +4,11 @@
 static void feedforward(LayerBase *thiz)
 {
     DataLayer *data = (DataLayer *) thiz;
-    tensor *output = data->lb->output;
-    /* Prepare a new copy for flowing data */
-    //tensor_create(&output, base->batchSize, base->inputDim, base->inputDim, base->inputChannel);
-    /* TODO: Copy data from input to output */
-    output->toGpu(output);
+    /* data flowing from input to output */
+    data->lb->output = data->lb->input;
+    /* prepare output on GPU memory */
+    data->lb->output->mallocDev(data->lb->output);
+    data->lb->output->toGpu(data->lb->output);
 }
 
 /* DataLayer has no preLayer */
@@ -35,11 +35,9 @@ void DataLayer_init(DataLayer **thiz, int batchSize, \
     base->inputChannel = inputChannel;
     base->outputChannel = inputChannel;
     base->input = NULL;
-    /* Allocate memory for output */
-    tensor_create(&base->output, base->batchSize, base->outputDim, base->outputDim, base->outputChannel);
-    /******************************/
+    base->output = NULL;
     base->preLayer = NULL;
     base->feedforward = feedforward;
-    /* TODO: unknown nextLayer */
+    /* Unkown Next Layer */
     base->nextLayer = NULL;
 }

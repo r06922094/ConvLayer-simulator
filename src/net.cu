@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-LayerBase *buildNetwork()
+LayerBase *buildNetwork(int _INPUT_DIM, int _IMAGE_CHANNEL)
 {
     DataLayer *dat;
     ConvLayer *conv;
@@ -29,14 +29,13 @@ tensor *next_batch(tensor *x, int N)
    tensor *ret = NULL;
    tensor_create(&ret, _BATCH_SIZE, x->D1, x->D2, x->D3);
 
-   memcpy(ret->hostData, x->hostData + N * area * _BATCH_SIZE, area * _BATCH_SIZE);
+   memcpy(ret->hostData, x->hostData + N * area * _BATCH_SIZE * sizeof(conv_unit_t), area * _BATCH_SIZE * sizeof(conv_unit_t));
 
    return ret;
 }
 
-void trainNetwork(LayerBase *head, tensor *x)
+tensor *trainNetwork(LayerBase *head, tensor *x)
 {
-    /* TODO: Batch Function */
     DataLayer *dat = (DataLayer *) head;
     ConvLayer *conv = (ConvLayer *) dat->lb->nextLayer; 
 
@@ -47,6 +46,10 @@ void trainNetwork(LayerBase *head, tensor *x)
 
         /* Start feedforward */
         dat->lb->feedforward((LayerBase *) dat);
+        conv->lb->input = dat->lb->output;
         conv->lb->feedforward((LayerBase *) conv);
     }
+
+    conv->lb->output->toCpu(conv->lb->output);
+    return conv->lb->output;
 }
