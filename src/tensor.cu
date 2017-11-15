@@ -32,7 +32,8 @@ static void toCpu(tensor *thiz)
     }
 
     if (error != cudaSuccess) {
-        printf("tensor.c: toCpu failed\n");
+        printf("tensor.c: toCpu failed: %d\n",error);
+        printf("Error: %s\n", cudaGetErrorString(error));
         exit(0);
     }
 }

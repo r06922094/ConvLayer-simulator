@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-LayerBase *buildNetwork(int _INPUT_DIM, int _IMAGE_CHANNEL)
+LayerBase *buildNetwork(int _INPUT_DIM, int _IMAGE_CHANNEL, int policy)
 {
     DataLayer *dat;
     ConvLayer *conv;
@@ -13,7 +13,7 @@ LayerBase *buildNetwork(int _INPUT_DIM, int _IMAGE_CHANNEL)
 
     ConvLayer_init(&conv, _BATCH_SIZE, _INPUT_DIM, \
                    _IMAGE_CHANNEL, _CONV_FILTER_DIM, \
-                   _CONV_FILTER_NUM, dat->lb, NULL);
+                   _CONV_FILTER_NUM, dat->lb, NULL, policy);
     
     /* Cheat */
     dat->lb->nextLayer = (LayerBase *) conv;
@@ -49,7 +49,9 @@ tensor *trainNetwork(LayerBase *head, tensor *x)
         conv->lb->input = dat->lb->output;
         conv->lb->feedforward((LayerBase *) conv);
     }
-
+    cudaDeviceSynchronize();
+    printf("conv done\n");
+    
     conv->lb->output->toCpu(conv->lb->output);
     return conv->lb->output;
 }

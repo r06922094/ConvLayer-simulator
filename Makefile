@@ -1,5 +1,5 @@
 CC := /usr/local/cuda-9.0/bin/nvcc
-CFLAGS = -O4 -g \
+CFLAGS = -O4 -g -gencode arch=compute_61,code=sm_61 --ptxas-options=-v \
          -I/usr/local/cuda/samples/common/inc/ \
 		 -I/usr/local/include/opencv/ \
 		 -I/usr/local/include/opencv2/ \

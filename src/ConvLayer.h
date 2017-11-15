@@ -13,6 +13,7 @@ struct __ConvLayer {
     int kernelAmount;
     tensor *weight;
     tensor *bias;
+    int policy;
 };
 
 /* TODO: feedforward implementation */
@@ -20,7 +21,7 @@ void ConvLayer_init(ConvLayer **thiz, int batchSize, \
                     int inputDim, \
                     int inputChannel, \
                     int kernelDim, int kernelAmount, \
-                    LayerBase *preLayer, LayerBase *nextLayer);
+                    LayerBase *preLayer, LayerBase *nextLayer, int policy);
 
 /* TODO: Random or Read from file? */
 void ConvLayer_weight_init(ConvLayer *thiz);
