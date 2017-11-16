@@ -9,7 +9,7 @@ A Neural Network which only have Data Layer and Convolution Layer with CUDA impl
 * You con modify definition of input in ```src/net.h```
 * If you want to redefine network, you can modify **buildNetwork()** in ```src/net.cu```. And remember to set the relation of each layer.
 * Also you need to add some code in **trainNetwork()** if structure of network modified.
-* Usage: ./main <image_path> <policy> <image_channel_amount>
+* Usage: ./main <image_path> <reuse_policy_index> <image_channel_amount>
 
 ## TODO
 * Convolution Layer implementation
